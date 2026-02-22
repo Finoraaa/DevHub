@@ -13,8 +13,10 @@ export function Auth() {
     setError(null);
 
     try {
-      const redirectUri = `${window.location.origin}/auth/callback`;
       const isPreview = window.location.hostname.includes('run.app') || window.location.hostname.includes('localhost');
+      const redirectUri = isPreview 
+        ? `${window.location.origin}/auth/callback`
+        : window.location.origin; // In production, redirect directly to home
 
       if (!isPreview) {
         // Standard redirect flow for production (Vercel)
