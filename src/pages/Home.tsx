@@ -65,7 +65,16 @@ export function Home({ user }: HomeProps) {
 
   return (
     <div className="space-y-8">
-      <section className="relative py-8 md:py-12 overflow-hidden rounded-[2rem] bg-[#5A5A40] dark:bg-[#2A2A1A] text-white">
+      <section className="relative py-8 md:py-12 overflow-hidden rounded-[2rem] bg-[#5A5A40] dark:bg-[#1a1a1a] text-white shadow-2xl shadow-[#5A5A40]/20">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://picsum.photos/seed/abstract/1920/1080" 
+            alt="Background" 
+            className="w-full h-full object-cover opacity-15 mix-blend-overlay scale-110"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#5A5A40]/80 to-transparent dark:from-[#1a1a1a]/80 z-0" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl -ml-32 -mb-32" />
         

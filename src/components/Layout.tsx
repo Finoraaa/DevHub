@@ -99,11 +99,17 @@ export function Layout({ children, user }: LayoutProps) {
                       to={`/profile/${user.id}`}
                       className="flex items-center gap-2 hover:opacity-80 transition-opacity group"
                     >
-                      <img
-                        src={user.user_metadata.avatar_url}
-                        alt={user.user_metadata.full_name}
-                        className="w-8 h-8 rounded-full border border-[#5A5A40]/20 dark:border-white/10 group-hover:border-[#5A5A40]/50 dark:group-hover:border-white/30 transition-colors"
-                      />
+                      {user.user_metadata.avatar_url ? (
+                        <img
+                          src={user.user_metadata.avatar_url}
+                          alt={user.user_metadata.full_name}
+                          className="w-8 h-8 rounded-full border border-[#5A5A40]/20 dark:border-white/10 group-hover:border-[#5A5A40]/50 dark:group-hover:border-white/30 transition-colors"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#5A5A40] dark:bg-[#8B8B6B] flex items-center justify-center text-white text-xs font-bold">
+                          {user.user_metadata.full_name?.charAt(0) || 'U'}
+                        </div>
+                      )}
                       <span className="hidden sm:inline text-sm font-medium text-[#1a1a1a]/80 dark:text-white/80 group-hover:text-[#5A5A40] dark:group-hover:text-[#8B8B6B] transition-colors">
                         {user.user_metadata.full_name}
                       </span>
