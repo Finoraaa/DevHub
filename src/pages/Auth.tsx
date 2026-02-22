@@ -14,7 +14,21 @@ export function Auth() {
 
     try {
       const redirectUri = `${window.location.origin}/auth/callback`;
-      
+      const isPreview = window.location.hostname.includes('run.app') || window.location.hostname.includes('localhost');
+
+      if (!isPreview) {
+        // Standard redirect flow for production (Vercel)
+        const { error: authError } = await supabase.auth.signInWithOAuth({
+          provider: 'github',
+          options: {
+            redirectTo: redirectUri,
+          },
+        });
+        if (authError) throw authError;
+        return; // Browser will redirect
+      }
+
+      // Popup flow for AI Studio preview environment
       const { data, error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
@@ -36,12 +50,12 @@ export function Auth() {
 
         const handleMessage = (event: MessageEvent) => {
           const origin = event.origin;
-          if (!origin.endsWith('.run.app') && !origin.includes('localhost')) return;
+          // Allow Vercel origins as well
+          if (!origin.endsWith('.run.app') && !origin.includes('localhost') && !origin.endsWith('.vercel.app')) return;
 
           if (event.data?.type === 'OAUTH_AUTH_SUCCESS' && event.data.url) {
             window.removeEventListener('message', handleMessage);
             
-            // Extract the hash from the popup's URL
             const url = new URL(event.data.url);
             const hash = url.hash.substring(1);
             const params = new URLSearchParams(hash);
@@ -62,7 +76,6 @@ export function Auth() {
                 setLoading(false);
               });
             } else {
-              // Fallback to reload if tokens aren't in hash for some reason
               window.location.hash = url.hash;
               window.location.reload();
             }
@@ -71,7 +84,6 @@ export function Auth() {
 
         window.addEventListener('message', handleMessage);
         
-        // Check if window is closed without success
         const checkClosed = setInterval(() => {
           if (authWindow.closed) {
             clearInterval(checkClosed);
@@ -93,8 +105,8 @@ export function Auth() {
         animate={{ opacity: 1, scale: 1 }}
         className="bg-white dark:bg-[#141414] p-8 rounded-3xl shadow-xl border border-[#5A5A40]/10 dark:border-white/5 text-center"
       >
-        <div className="w-16 h-16 bg-[#5A5A40] dark:bg-[#8B8B6B] rounded-2xl flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
-          D
+        <div className="w-16 h-16 bg-[#5A5A40] dark:bg-[#8B8B6B] rounded-2xl flex items-center justify-center text-white text-3xl font-serif italic font-bold mx-auto mb-6">
+          F
         </div>
         <h1 className="text-3xl font-serif italic font-bold text-[#5A5A40] dark:text-[#8B8B6B] mb-2">Welcome Back</h1>
         <p className="text-[#1a1a1a]/60 dark:text-white/40 mb-8">
